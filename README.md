@@ -79,7 +79,7 @@ Esta é a maneira mais fácil de testar o projeto sem precisar instalar nada em 
 1.  **Abra um novo notebook no Google Colab.**
 
 2.  **Célula 1: Clone o repositório**
-    Copie e cole o seguinte comando na primeira célula, substituindo `LPG6/ProcessamentoImagens_RotacaoRedimencionamento` pelos dados do seu repositório.
+    Copie e cole o seguinte comando na primeira célula.
     ```python
     # Clona o seu projeto para o ambiente do Colab
     !git clone https://github.com/LPG6/ProcessamentoImagens_RotacaoRedimencionamento.git
