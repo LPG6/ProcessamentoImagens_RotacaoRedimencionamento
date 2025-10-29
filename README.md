@@ -17,26 +17,91 @@ A aplicação é ideal para tarefas rápidas de edição, como endireitar fotos 
 *   **Pré-visualização em Tempo Real:** Veja o resultado das suas transformações na interface antes de fazer o download.
 *   **Exportação em Múltiplos Formatos:** Baixe a imagem processada nos formatos **PNG** ou **JPG**.
 
-## 🚀 Como Executar o Projeto
+## 📂 Estrutura do Projeto
 
-### Pré-requisitos
-*   Python 3.x instalado.
+Este projeto segue uma estrutura modular para facilitar a manutenção e escalabilidade:
 
-### 1. Instalação das Dependências
-Abra seu terminal ou prompt de comando e instale as bibliotecas necessárias com o seguinte comando:
-
-```bash
-pip install gradio opencv-python-headless pillow numpy
+```
+seu-repositorio/
+│
+├── image_processor/
+│   ├── __init__.py        # Torna a pasta um "pacote" Python
+│   ├── processing.py      # Contém toda a lógica de processamento de imagem (OpenCV)
+│   └── ui.py              # Contém toda a lógica da interface do usuário (Gradio)
+│
+├── main.py                # Ponto de entrada principal para iniciar a aplicação
+├── requirements.txt       # Lista todas as bibliotecas necessárias para o projeto
+└── README.md              # Esta documentação
 ```
 
-### 2. Executando o Script
-1.  Salve o código completo em um arquivo chamado `processador_de_imagens.py`.
-2.  Navegue até a pasta onde você salvou o arquivo pelo terminal.
-3.  Execute o script com o comando:
+## 🚀 Como Executar
 
+Você pode executar este projeto de duas maneiras: localmente em sua máquina ou diretamente no Google Colab.
+
+### A. Executando Localmente
+
+**Pré-requisitos:**
+*   [Git](https://git-scm.com/) instalado.
+*   [Python 3.x](https://www.python.org/downloads/) instalado.
+
+**Passos:**
+
+1.  **Clone o repositório:**
+    Abra seu terminal e clone este repositório do GitHub.
     ```bash
-    python processador_de_imagens.py
-    ```4.  O terminal exibirá mensagens de inicialização e, por fim, um URL local (geralmente `http://127.0.0.1:7860`) e um URL público (share link). Abra qualquer um desses links no seu navegador.
+    git clone https://github.com/SEU_USUARIO/SEU_REPOSITORIO.git
+    ```
+
+2.  **Navegue até o diretório do projeto:**
+    ```bash
+    cd SEU_REPOSITORIO
+    ```
+
+3.  **Instale as dependências:**
+    O arquivo `requirements.txt` contém todas as bibliotecas necessárias. Instale-as com um único comando:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4.  **Execute a aplicação:**
+    Inicie o script principal.
+    ```bash
+    python main.py
+    ```
+
+5.  **Acesse a interface:**
+    O terminal exibirá um URL local (geralmente `http://127.0.0.1:7860`). Abra este link no seu navegador para usar a ferramenta.
+
+### B. Executando no Google Colab
+
+Esta é a maneira mais fácil de testar o projeto sem precisar instalar nada em sua máquina.
+
+1.  **Abra um novo notebook no Google Colab.**
+
+2.  **Célula 1: Clone o repositório**
+    Copie e cole o seguinte comando na primeira célula, substituindo `SEU_USUARIO/SEU_REPOSITORIO` pelos dados do seu repositório.
+    ```python
+    # Clona o seu projeto para o ambiente do Colab
+    !git clone https://github.com/LPG6/ProcessamentoImagens_RotacaoRedimencionamento.git
+    ```
+
+3.  **Célula 2: Instale as dependências**
+    Navegue para a pasta do projeto e instale as bibliotecas a partir do `requirements.txt`.
+    ```python
+    # Entra na pasta do projeto
+    %cd ProcessamentoImagens_RotacaoRedimencionamento
+
+    # Instala todas as bibliotecas necessárias
+    !pip install -r requirements.txt
+    ```
+
+4.  **Célula 3: Execute a aplicação**
+    Inicie o script principal para lançar a interface do Gradio.
+    ```python
+    # Executa a aplicação
+    !python main.py
+    ```
+    Ao executar esta célula, o Colab fornecerá um **URL público** (`...gradio.live`). Clique nesse link para abrir e usar a ferramenta.
 
 ## 🔧 Como Utilizar a Ferramenta
 
