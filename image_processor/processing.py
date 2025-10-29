@@ -1,3 +1,4 @@
+from skimage.metrics import structural_similarity as ssim
 import cv2
 import numpy as np
 import math
@@ -99,3 +100,48 @@ def redimensionar_imagem_alta_qualidade(imagem, nova_largura, nova_altura, mante
             
     interpolacao = cv2.INTER_AREA if nova_largura * nova_altura < largura_original * altura_original else cv2.INTER_CUBIC
     return cv2.resize(imagem, (nova_largura, nova_altura), interpolation=interpolacao)
+
+def calcular_perda_ssim(imagem_original_bgr, imagem_processada_bgr):
+    """
+    Calcula a perda de qualidade usando SSIM após o redimensionamento.
+    A imagem processada é redimensionada de volta ao tamanho original para comparação.
+    """
+    print("[DEBUG ANÁLISE] Calculando perda de qualidade com SSIM...")
+    
+    # Converte ambas as imagens para escala de cinza para o cálculo do SSIM
+    original_cinza = cv2.cvtColor(imagem_original_bgr, cv2.COLOR_BGR2GRAY)
+    processada_cinza = cv2.cvtColor(imagem_processada_bgr, cv2.COLOR_BGR2GRAY)
+
+    # Redimensiona a imagem processada de volta ao tamanho original para que o SSIM possa ser calculado
+    h_orig, w_orig = original_cinza.shape
+    processada_cinza_revertida = cv2.resize(processada_cinza, (w_orig, h_orig), interpolation=cv2.INTER_AREA)
+
+    # Calcula o SSIM. O score varia de -1 a 1, onde 1 é uma correspondência perfeita.
+    score, _ = ssim(original_cinza, processada_cinza_revertida, full=True)
+    
+    # Calcula a perda percentual
+    perda_percentual = (1 - score) * 100
+    
+    print(f"[DEBUG ANÁLISE] Score SSIM: {score:.4f}, Perda: {perda_percentual:.2f}%")
+    return f"Perda de Qualidade (SSIM): {perda_percentual:.2f}%"
+
+def avaliar_nitidez(imagem):
+    """
+    Avalia a nitidez da imagem calculando a variância do Laplaciano.
+    Valores mais altos geralmente indicam uma imagem mais nítida.
+    """
+    print("[DEBUG ANÁLISE] Avaliando a nitidez da imagem...")
+    
+    # Converte para escala de cinza
+    if len(imagem.shape) > 2 and imagem.shape[2] == 4: # Se for BGRA
+        imagem_bgr = cv2.cvtColor(imagem, cv2.COLOR_BGRA2BGR)
+    else:
+        imagem_bgr = imagem
+        
+    cinza = cv2.cvtColor(imagem_bgr, cv2.COLOR_BGR2GRAY)
+
+    # Calcula a variância do operador Laplaciano
+    variancia_laplaciano = cv2.Laplacian(cinza, cv2.CV_64F).var()
+    
+    print(f"[DEBUG ANÁLISE] Variância do Laplaciano (Nitidez): {variancia_laplaciano:.2f}")
+    return f"Índice de Nitidez: {variancia_laplaciano:.2f}"
