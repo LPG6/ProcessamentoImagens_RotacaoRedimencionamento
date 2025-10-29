@@ -2,8 +2,9 @@ import gradio as gr
 from PIL import Image
 import cv2
 
-# Importa as funções de processamento do outro arquivo
 from .processing import (
+    calcular_perda_ssim,
+    avaliar_nitidez,
     rotacionar_imagem,
     rotacao_automatica,
     corte_automatico,
@@ -11,7 +12,6 @@ from .processing import (
     redimensionar_imagem_alta_qualidade
 )
 
-# --- FUNÇÕES HANDLER ---
 
 def processar_imagem(imagem_original, tipo_rotacao, angulo_rotacao, metodo_corte, nova_largura, nova_altura, manter_proporcao, formato_saida):
     if imagem_original is None:
@@ -60,7 +60,6 @@ def atualizar_formato_saida(metodo_corte):
     else:
         return gr.update(interactive=True)
 
-# --- DEFINIÇÃO DA INTERFACE ---
 
 def criar_interface():
     custom_css = """#altura_input_box input:disabled, #formato_output_box input:disabled { background-color: #e9ecef; cursor: not-allowed; }"""
