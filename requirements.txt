@@ -2,3 +2,4 @@ gradio
 opencv-python-headless
 pillow
 numpy
+scikit-image
