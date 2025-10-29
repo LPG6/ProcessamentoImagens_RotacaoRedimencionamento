@@ -21,16 +21,25 @@ def processar_imagem(imagem_original, tipo_rotacao, angulo_rotacao, metodo_corte
 
     if tipo_rotacao == 'Automática':
         imagem_processada = rotacao_automatica(imagem_processada)
-    else:
+    elif angulo_rotacao != 0:
         imagem_processada = rotacionar_imagem(imagem_processada, angulo_rotacao)
+    
+    info_nitidez = avaliar_nitidez(imagem_processada)
     
     if metodo_corte == 'Contorno Retangular (Objetos)':
         imagem_processada = corte_automatico(imagem_processada)
     elif metodo_corte == 'Remoção de Fundo (Objetos)':
         imagem_processada = corte_com_remocao_fundo(imagem_processada)
-        
-    imagem_processada = redimensionar_imagem_alta_qualidade(imagem_processada, nova_largura, nova_altura, manter_proporcao)
 
+    info_qualidade = "N/A (Nenhum redimensionamento aplicado)"
+    foi_redimensionado = (nova_largura and nova_largura > 0) or \
+                         (nova_altura and nova_altura > 0)
+    
+    if foi_redimensionado:
+        imagem_redimensionada = redimensionar_imagem_alta_qualidade(imagem_processada, nova_largura, nova_altura, manter_proporcao)
+        info_qualidade = calcular_perda_ssim(imagem_processada, imagem_redimensionada)
+        imagem_processada = imagem_redimensionada
+    
     if len(imagem_processada.shape) == 3 and imagem_processada.shape[2] == 4:
         imagem_final = cv2.cvtColor(imagem_processada, cv2.COLOR_BGRA2RGBA)
         img_pil = Image.fromarray(imagem_final, 'RGBA')
@@ -42,11 +51,10 @@ def processar_imagem(imagem_original, tipo_rotacao, angulo_rotacao, metodo_corte
     if formato_saida == 'PNG':
         img_pil.save(caminho_arquivo, format='PNG')
     elif formato_saida == 'JPG':
-        if img_pil.mode == 'RGBA':
-            img_pil = img_pil.convert('RGB')
+        if img_pil.mode == 'RGBA': img_pil = img_pil.convert('RGB')
         img_pil.save(caminho_arquivo, format='JPEG', quality=95)
 
-    return imagem_final, caminho_arquivo
+    return imagem_final, caminho_arquivo, info_nitidez, info_qualidade
 
 def atualizar_controles_rotacao(tipo_rotacao):
     return gr.update(interactive=(tipo_rotacao == 'Manual'), value=0)
@@ -82,13 +90,23 @@ def criar_interface():
                 gr.Markdown("### 4. Formato de Saída")
                 formato_output = gr.Radio(['PNG', 'JPG'], value='PNG', label="Formato", elem_id="formato_output_box")
                 submit_btn = gr.Button("Aplicar Transformações", variant="primary")
+
             with gr.Column(scale=2):
                 imagem_output = gr.Image(label="Imagem Processada", type="numpy")
                 download_output = gr.File(label="Baixar Imagem")
+                
+                with gr.Accordion("Métricas de Análise", open=True):
+                    nitidez_output = gr.Textbox(label="Nitidez da Imagem Pós-Rotação")
+                    qualidade_output = gr.Textbox(label="Perda de Qualidade Pós-Redimensionamento")
 
         tipo_rotacao_input.change(fn=atualizar_controles_rotacao, inputs=tipo_rotacao_input, outputs=angulo_input)
         proporcao_input.change(fn=atualizar_estado_altura, inputs=proporcao_input, outputs=altura_input)
         metodo_corte_input.change(fn=atualizar_formato_saida, inputs=metodo_corte_input, outputs=formato_output)
-        submit_btn.click(fn=processar_imagem, inputs=[imagem_input, tipo_rotacao_input, angulo_input, metodo_corte_input, largura_input, altura_input, proporcao_input, formato_output], outputs=[imagem_output, download_output])
+    
+        submit_btn.click(
+            fn=processar_imagem, 
+            inputs=[imagem_input, tipo_rotacao_input, angulo_input, metodo_corte_input, largura_input, altura_input, proporcao_input, formato_output], 
+            outputs=[imagem_output, download_output, nitidez_output, qualidade_output]
+        )
     
     return demo
