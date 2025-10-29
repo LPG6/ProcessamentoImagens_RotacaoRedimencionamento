@@ -49,12 +49,12 @@ Você pode executar este projeto de duas maneiras: localmente em sua máquina ou
 1.  **Clone o repositório:**
     Abra seu terminal e clone este repositório do GitHub.
     ```bash
-    git clone https://github.com/SEU_USUARIO/SEU_REPOSITORIO.git
+    git clone https://github.com/LPG6/ProcessamentoImagens_RotacaoRedimencionamento.git
     ```
 
 2.  **Navegue até o diretório do projeto:**
     ```bash
-    cd SEU_REPOSITORIO
+    cd ProcessamentoImagens_RotacaoRedimencionamento
     ```
 
 3.  **Instale as dependências:**
@@ -70,7 +70,7 @@ Você pode executar este projeto de duas maneiras: localmente em sua máquina ou
     ```
 
 5.  **Acesse a interface:**
-    O terminal exibirá um URL local (geralmente `http://127.0.0.1:7860`). Abra este link no seu navegador para usar a ferramenta.
+    O terminal exibirá um URL. Abra este link no seu navegador para usar a ferramenta.
 
 ### B. Executando no Google Colab
 
@@ -79,7 +79,7 @@ Esta é a maneira mais fácil de testar o projeto sem precisar instalar nada em 
 1.  **Abra um novo notebook no Google Colab.**
 
 2.  **Célula 1: Clone o repositório**
-    Copie e cole o seguinte comando na primeira célula, substituindo `SEU_USUARIO/SEU_REPOSITORIO` pelos dados do seu repositório.
+    Copie e cole o seguinte comando na primeira célula, substituindo `LPG6/ProcessamentoImagens_RotacaoRedimencionamento` pelos dados do seu repositório.
     ```python
     # Clona o seu projeto para o ambiente do Colab
     !git clone https://github.com/LPG6/ProcessamentoImagens_RotacaoRedimencionamento.git
