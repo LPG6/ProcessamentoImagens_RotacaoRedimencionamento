@@ -22,7 +22,7 @@ A aplicação é ideal para tarefas rápidas de edição, como endireitar fotos 
 Este projeto segue uma estrutura modular para facilitar a manutenção e escalabilidade:
 
 ```
-seu-repositorio/
+ProcessamentoImagens_RotacaoRedimencionamento/
 │
 ├── image_processor/
 │   ├── __init__.py        # Torna a pasta um "pacote" Python
