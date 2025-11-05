@@ -145,3 +145,82 @@ def avaliar_nitidez(imagem):
     
     print(f"[DEBUG ANÁLISE] Variância do Laplaciano (Nitidez): {variancia_laplaciano:.2f}")
     return f"Índice de Nitidez: {variancia_laplaciano:.2f}"
+
+def corte_rosto_mediapipe(imagem_bgr):
+
+    print("\n--- [DEBUG EXTRAÇÃO DE ROSTO] Iniciando com MediaPipe ---")
+    
+    mp_face_mesh = mp.solutions.face_mesh
+    
+    imagem_bgra = cv2.cvtColor(imagem_bgr, cv2.COLOR_BGR2BGRA)
+    imagem_rgb = cv2.cvtColor(imagem_bgr, cv2.COLOR_BGR2RGB)
+
+    mask = np.zeros(imagem_bgr.shape[:2], dtype=np.uint8)
+
+    with mp_face_mesh.FaceMesh(static_image_mode=True,
+                               max_num_faces=1,
+                               refine_landmarks=True,
+                               min_detection_confidence=0.5) as face_mesh:
+        
+        results = face_mesh.process(imagem_rgb)
+
+        if not results.multi_face_landmarks:
+            print("[DEBUG EXTRAÇÃO DE ROSTO] AVISO: Nenhum rosto foi detectado. Retornando imagem original.")
+            return imagem_bgr
+
+        for face_landmarks in results.multi_face_landmarks:
+            h, w, _ = imagem_bgr.shape
+            points = []
+            for landmark in face_landmarks.landmark:
+                x, y = int(landmark.x * w), int(landmark.y * h)
+                points.append([x, y])
+            
+            points = np.array(points, dtype=np.int32)
+
+            hull = cv2.convexHull(points)
+            
+            cv2.fillConvexPoly(mask, hull, 255)
+
+    cv2.imwrite("debug_mascara_rosto_mediapipe.png", mask)
+    print("[DEBUG EXTRAÇÃO DE ROSTO] MÁSCARA SALVA: 'debug_mascara_rosto_mediapipe.png'.")
+
+    imagem_bgra[:, :, 3] = mask
+
+    x, y, w, h = cv2.boundingRect(hull)
+    imagem_final_cortada = imagem_bgra[y:y+h, x:x+w]
+    
+    print("[DEBUG EXTRAÇÃO DE ROSTO] SUCESSO: Rosto extraído com fundo transparente.")
+    return imagem_final_cortada
+
+def reorientar_objeto_por_template(imagem_bgr, template_bgr, rotacionar_func):
+
+    print("\n--- [DEBUG REORIENTAÇÃO] Iniciando reorientação por template ---")
+
+    if template_bgr is None:
+        print("[DEBUG REORIENTAÇÃO] ERRO: Nenhuma imagem de template foi fornecida.")
+        return imagem_bgr
+
+    template_cinza = cv2.cvtColor(template_bgr, cv2.COLOR_BGR2GRAY)
+    melhor_score = -1.0
+    melhor_rotacao_final = 0
+
+    for angulo_teste in [0, 90, 180, 270]:
+        imagem_rotacionada = rotacionar_func(imagem_bgr, angulo_teste)
+        imagem_cinza = cv2.cvtColor(imagem_rotacionada, cv2.COLOR_BGR2GRAY)
+
+        if template_cinza.shape[0] > imagem_cinza.shape[0] or template_cinza.shape[1] > imagem_cinza.shape[1]:
+            print(f"[DEBUG REORIENTAÇÃO] Ângulo {angulo_teste}°: Template é maior que a imagem, pulando.")
+            continue
+
+        resultado = cv2.matchTemplate(imagem_cinza, template_cinza, cv2.TM_CCOEFF_NORMED)
+        _, max_val, _, _ = cv2.minMaxLoc(resultado)
+
+        print(f"[DEBUG REORIENTAÇÃO] Testando ângulo {angulo_teste}° -> Score de similaridade: {max_val:.4f}")
+
+        if max_val > melhor_score:
+            melhor_score = max_val
+            melhor_rotacao_final = angulo_teste
+
+    print(f"[DEBUG REORIENTAÇÃO] Melhor orientação encontrada: {melhor_rotacao_final}° com score {melhor_score:.4f}")
+
+    return rotacionar_func(imagem_bgr, melhor_rotacao_final)
