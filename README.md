@@ -24,14 +24,39 @@ Este projeto segue uma estrutura modular para facilitar a manutenção e escalab
 ```
 Processamento_de_Imagens_E02_Grupo3/
 │
-├── image_processor/
-│   ├── __init__.py        # Torna a pasta um "pacote" Python
-│   ├── processing.py      # Contém toda a lógica de processamento de imagem (OpenCV)
-│   └── ui.py              # Contém toda a lógica da interface do usuário (Gradio)
+│   README.md
+│   requirements.txt
 │
-├── main.py                # Ponto de entrada principal para iniciar a aplicação
-├── requirements.txt       # Lista todas as bibliotecas necessárias para o projeto
-└── README.md              # Esta documentação
+├─── demo
+├─── docs
+├─── images
+│   ├─── imagesPostProcess
+│   │       big35.png
+│   │       big35AutoRotacao.png
+│   │       cafe-100-IN175,2-PQ13,92.png
+│   │       cafe100=1440-IN118,6-PQ0,4.png
+│   │       pinguimAutoRotacao-AutoRotacao.png
+│   │       pinguimAutoRotacao.png
+│   │       tutu10-IN189,73-PQ50,23.png
+│   │       tutuAutoRotacao.png
+│   │
+│   └─── imagesPreProcess
+│           big.jpg
+│           cafe.jpg
+│           drAraujo.png
+│           drAraujoD.png
+│           drAraujoE.png
+│           drAraujoUp.png
+│           pinguim.jpg
+│           tutu.jpg
+│
+└─── src
+    │   main.py
+    │
+    └─── image_processor
+            processing.py
+            ui.py
+            __init__.py
 ```
 
 ## 🚀 Como Executar
