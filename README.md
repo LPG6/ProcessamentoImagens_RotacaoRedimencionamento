@@ -22,7 +22,7 @@ A aplicação é ideal para tarefas rápidas de edição, como endireitar fotos 
 Este projeto segue uma estrutura modular para facilitar a manutenção e escalabilidade:
 
 ```
-ProcessamentoImagens_RotacaoRedimencionamento/
+Processamento_de_Imagens_E02_Grupo3/
 │
 ├── image_processor/
 │   ├── __init__.py        # Torna a pasta um "pacote" Python
@@ -49,12 +49,12 @@ Você pode executar este projeto de duas maneiras: localmente em sua máquina ou
 1.  **Clone o repositório:**
     Abra seu terminal e clone este repositório do GitHub.
     ```bash
-    git clone https://github.com/LPG6/ProcessamentoImagens_RotacaoRedimencionamento.git
+    git clone https://github.com/LPG6/Processamento_de_Imagens_E02_Grupo3.git
     ```
 
 2.  **Navegue até o diretório do projeto:**
     ```bash
-    cd ProcessamentoImagens_RotacaoRedimencionamento
+    cd Processamento_de_Imagens_E02_Grupo3
     ```
 
 3.  **Instale as dependências:**
@@ -82,14 +82,14 @@ Esta é a maneira mais fácil de testar o projeto sem precisar instalar nada em 
     Copie e cole o seguinte comando na primeira célula.
     ```python
     # Clona o seu projeto para o ambiente do Colab
-    !git clone https://github.com/LPG6/ProcessamentoImagens_RotacaoRedimencionamento.git
+    !git clone https://github.com/LPG6/Processamento_de_Imagens_E02_Grupo3.git
     ```
 
 3.  **Célula 2: Instale as dependências**
     Navegue para a pasta do projeto e instale as bibliotecas a partir do `requirements.txt`.
     ```python
     # Entra na pasta do projeto
-    %cd ProcessamentoImagens_RotacaoRedimencionamento
+    %cd Processamento_de_Imagens_E02_Grupo3
 
     # Instala todas as bibliotecas necessárias
     !pip install -r requirements.txt
@@ -137,8 +137,8 @@ Esta seção demonstra o comportamento da aplicação em diferentes cenários, d
 
 | Cenário de Teste | Imagens de Exemplo (Original → Processada) | Funcionalidades a Utilizar | Resultado e Análise Técnica |
 | :--- | :--- | :--- | :--- |
-| **1. Redimensionamento Extremo (Downscaling)** | ![tutu.jpg](images/tutu.jpg) → ![tutu10.png](imagesPro/tutu10-IN189,73-PQ50,23.png) | 1. **Redimensionamento:** Largura = 10px<br>2. **Manter Proporção:** Ativado | **✅ Sucesso (com ressalvas).**<br><br>**Análise:** A funcionalidade operou corretamente, mas o resultado destaca a consequência da perda de dados. A **Perda de Qualidade (SSIM) de 50,23%** é altíssima e esperada, pois reduzir uma imagem a uma largura de 10 pixels descarta uma quantidade massiva de informação. O SSIM mede a similaridade estrutural, que foi drasticamente alterada. A **Nitidez de 189,73** refere-se à imagem original, que é moderadamente nítida. |
-| **2. Rotação Automática em Imagem Reta** | ![tutu.jpg](images/tutu.jpg) → ![tutuAutoRotacao.png](imagesPro/tutuAutoRotacao.png) | 1. **Rotação:** `Automática` | **⚠️ Falha Parcial (Esperada).**<br><br>**Análise:** A imagem, que já estava reta, foi ligeiramente desalinhada. Isso ocorre porque o algoritmo da Transformada de Hough não analisa apenas o horizonte, mas **todas as linhas** da imagem (contornos do rosto, cabelo, etc.). Se a "mediana" dos ângulos de todas essas linhas não for exatamente zero, o algoritmo aplicará uma "correção" indesejada. É uma limitação clássica da técnica. |
-| **3. Erro Cumulativo da Rotação Automática** | ![pinguin.jpg](images/pinguim.jpg) → ![pinguimAutoRotacao.png](imagesPro/pinguimAutoRotacao.png) → ![pinguimAutoRotacao-AutoRotacao.png](imagesPro/pinguimAutoRotacao-AutoRotacao.png) | 1. **Rotação:** `Automática`<br>2. **Rotação:** `Automática` (aplicada novamente sobre o resultado) | **❌ Falha (Esperada).**<br><br>**Análise:** A primeira rotação falhou porque as linhas verticais fortes do pinguim "enganaram" o algoritmo, fazendo-o pensar que a imagem estava de lado. Ao aplicar a rotação automática **novamente** sobre a imagem já incorreta, o erro foi agravado, resultando em uma rotação de quase 180°. Isso demonstra a falta de compreensão semântica do algoritmo. |
-| **4. Perda Irreversível por Redimensionamento** | ![cafe.jpg](images/cafe.jpg) → ![cafe-100.png](imagesPro/cafe-100-IN175,2-PQ13,92.png) → ![cafe100=1440.png](imagesPro/cafe100=1440-IN118,6-PQ0,4.png) | 1. **Redimensionamento:** Largura = 100px<br>2. **Redimensionamento:** Largura = 1440px (sobre o resultado anterior) | **✅ Sucesso.**<br><br>**Análise:** Este é um teste excelente sobre perda de dados. <br>• **Passo 1 (Downscaling):** A perda de **13,94%** e a queda da nitidez do original (**175,2**) para **118,6** mostram que a informação foi permanentemente perdida. <br>• **Passo 2 (Upscaling):** A perda de apenas **0,4%** é enganosa. O SSIM está comparando a imagem de 100px com a sua versão ampliada (e depois reduzida para comparação), que são estruturalmente idênticas. No entanto, a nitidez final (**118,6**) prova que a qualidade perdida no primeiro passo **nunca foi recuperada**. |
-| **5. Rotação Automática em Objeto Vertical** | ![big.jpg](images/big.jpg) → ![big35.png](imagesPro/big35.png) → ![big35AutoRotacao.png](imagesPro/big35AutoRotacao.png) | 1. **Rotação:** `Manual`, Ângulo = 35°<br>2. **Rotação:** `Automática` (sobre o resultado anterior) | **❌ Falha (Esperada).**<br><br>**Análise:** Este teste confirma o problema de **"deskew" vs. "re-orient"**. O objeto "big" (provavelmente Big Ben) tem linhas verticais dominantes (90°). Após a rotação manual de 35°, essas linhas ficaram em ~125°. A rotação automática tentou forçar essas linhas dominantes a ficarem horizontais (0°), resultando em uma rotação massiva e incorreta. A ferramenta não "sabe" que o objeto deve ficar em pé. |
+| **1. Redimensionamento Extremo (Downscaling)** | ![tutu.jpg](images/imagesPreProcess/tutu.jpg) → ![tutu10.png](images/imagesPostProcess/tutu10-IN189,73-PQ50,23.png) | 1. **Redimensionamento:** Largura = 10px<br>2. **Manter Proporção:** Ativado | **✅ Sucesso (com ressalvas).**<br><br>**Análise:** A funcionalidade operou corretamente, mas o resultado destaca a consequência da perda de dados. A **Perda de Qualidade (SSIM) de 50,23%** é altíssima e esperada, pois reduzir uma imagem a uma largura de 10 pixels descarta uma quantidade massiva de informação. O SSIM mede a similaridade estrutural, que foi drasticamente alterada. A **Nitidez de 189,73** refere-se à imagem original, que é moderadamente nítida. |
+| **2. Rotação Automática em Imagem Reta** | ![tutu.jpg](images/imagesPreProcess/tutu.jpg) → ![tutuAutoRotacao.png](images/imagesPostProcess/tutuAutoRotacao.png) | 1. **Rotação:** `Automática` | **⚠️ Falha Parcial (Esperada).**<br><br>**Análise:** A imagem, que já estava reta, foi ligeiramente desalinhada. Isso ocorre porque o algoritmo da Transformada de Hough não analisa apenas o horizonte, mas **todas as linhas** da imagem (contornos do rosto, cabelo, etc.). Se a "mediana" dos ângulos de todas essas linhas não for exatamente zero, o algoritmo aplicará uma "correção" indesejada. É uma limitação clássica da técnica. |
+| **3. Erro Cumulativo da Rotação Automática** | ![pinguin.jpg](images/imagesPreProcess/pinguim.jpg) → ![pinguimAutoRotacao.png](images/imagesPostProcess/pinguimAutoRotacao.png) → ![pinguimAutoRotacao-AutoRotacao.png](images/imagesPostProcess/pinguimAutoRotacao-AutoRotacao.png) | 1. **Rotação:** `Automática`<br>2. **Rotação:** `Automática` (aplicada novamente sobre o resultado) | **❌ Falha (Esperada).**<br><br>**Análise:** A primeira rotação falhou porque as linhas verticais fortes do pinguim "enganaram" o algoritmo, fazendo-o pensar que a imagem estava de lado. Ao aplicar a rotação automática **novamente** sobre a imagem já incorreta, o erro foi agravado, resultando em uma rotação de quase 180°. Isso demonstra a falta de compreensão semântica do algoritmo. |
+| **4. Perda Irreversível por Redimensionamento** | ![cafe.jpg](images/imagesPreProcess/cafe.jpg) → ![cafe-100.png](images/imagesPostProcess/cafe-100-IN175,2-PQ13,92.png) → ![cafe100=1440.png](images/imagesPostProcess/cafe100=1440-IN118,6-PQ0,4.png) | 1. **Redimensionamento:** Largura = 100px<br>2. **Redimensionamento:** Largura = 1440px (sobre o resultado anterior) | **✅ Sucesso.**<br><br>**Análise:** Este é um teste excelente sobre perda de dados. <br>• **Passo 1 (Downscaling):** A perda de **13,94%** e a queda da nitidez do original (**175,2**) para **118,6** mostram que a informação foi permanentemente perdida. <br>• **Passo 2 (Upscaling):** A perda de apenas **0,4%** é enganosa. O SSIM está comparando a imagem de 100px com a sua versão ampliada (e depois reduzida para comparação), que são estruturalmente idênticas. No entanto, a nitidez final (**118,6**) prova que a qualidade perdida no primeiro passo **nunca foi recuperada**. |
+| **5. Rotação Automática em Objeto Vertical** | ![big.jpg](images/imagesPreProcess/big.jpg) → ![big35.png](images/imagesPostProcess/big35.png) → ![big35AutoRotacao.png](images/imagesPostProcess/big35AutoRotacao.png) | 1. **Rotação:** `Manual`, Ângulo = 35°<br>2. **Rotação:** `Automática` (sobre o resultado anterior) | **❌ Falha (Esperada).**<br><br>**Análise:** Este teste confirma o problema de **"deskew" vs. "re-orient"**. O objeto "big" (provavelmente Big Ben) tem linhas verticais dominantes (90°). Após a rotação manual de 35°, essas linhas ficaram em ~125°. A rotação automática tentou forçar essas linhas dominantes a ficarem horizontais (0°), resultando em uma rotação massiva e incorreta. A ferramenta não "sabe" que o objeto deve ficar em pé. |
