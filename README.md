@@ -59,6 +59,20 @@ Processamento_de_Imagens_E02_Grupo3/
             __init__.py
 ```
 
+## 📚 Bibliotecas Utilizadas
+
+
+Abaixo está uma lista das dependências principais e o papel de cada uma na aplicação.
+
+| Biblioteca | Versão Comum | Propósito Principal |
+| :--- | :--- | :--- |
+| **Gradio** | `~4.x` | Utilizada para criar e lançar a interface web interativa de forma rápida e com poucas linhas de código. É a base de toda a interação com o usuário. |
+| **OpenCV (`opencv-python-headless`)** | `~4.x` | A principal ferramenta de processamento de imagem. Usada para todas as transformações: rotação, redimensionamento, conversão de cores, detecção de contornos (`findContours`), transformada de Hough (`HoughLinesP`) e cálculo da variância do Laplaciano para a medição de nitidez. |
+| **NumPy** | `~1.2x` | Dependência fundamental do OpenCV. É usada para a manipulação eficiente de arrays multidimensionais, que é a estrutura de dados base para representar imagens. Cálculos como a mediana dos ângulos também são realizados com NumPy. |
+| **Pillow (`PIL`)** | `~10.x` | Utilizada para a conversão final entre os arrays NumPy (formato do OpenCV) e os formatos de arquivo de imagem (`.png`, `.jpg`). É a biblioteca responsável por salvar os arquivos processados que são disponibilizados para download. |
+| **scikit-image (`skimage`)** | `~0.2x` | Usada para análises e métricas de imagem avançadas. Especificamente, utilizamos a função `structural_similarity` (SSIM) desta biblioteca para calcular a perda percentual de qualidade após o redimensionamento, comparando a estrutura das imagens antes e depois da transformação. |
+| **math** | (Padrão do Python) | Módulo padrão do Python utilizado para cálculos matemáticos básicos, como a conversão de radianos para graus (`math.degrees`) e a função `atan2` para determinar os ângulos das linhas detectadas. |
+
 ## 🚀 Como Executar
 
 Você pode executar este projeto de duas maneiras: localmente em sua máquina ou diretamente no Google Colab.
