@@ -101,14 +101,19 @@ Você pode executar este projeto de duas maneiras: localmente em sua máquina ou
     ```bash
     pip install -r requirements.txt
     ```
+    
+4.  **Navegue até o diretório do `main.py`:**
+    ```bash
+    cd src
+    ```
 
-4.  **Execute a aplicação:**
+5.  **Execute a aplicação:**
     Inicie o script principal.
     ```bash
     python main.py
     ```
 
-5.  **Acesse a interface:**
+6.  **Acesse a interface:**
     O terminal exibirá um URL. Abra este link no seu navegador para usar a ferramenta.
 
 ### B. Executando no Google Colab
@@ -137,6 +142,9 @@ Esta é a maneira mais fácil de testar o projeto sem precisar instalar nada em 
 4.  **Célula 3: Execute a aplicação**
     Inicie o script principal para lançar a interface do Gradio.
     ```python
+    # Entra na pasta do main.py
+    %cd src
+    
     # Executa a aplicação
     !python main.py
     ```
