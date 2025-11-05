@@ -72,7 +72,7 @@ Abaixo está uma lista das dependências principais e o papel de cada uma na apl
 | **Pillow (`PIL`)** | `11.3.0` | Utilizada para a conversão final entre os arrays NumPy (formato do OpenCV) e os formatos de arquivo de imagem (`.png`, `.jpg`). É a biblioteca responsável por salvar os arquivos processados que são disponibilizados para download. |
 | **scikit-image (`skimage`)** | `0.25.2` | Usada para análises e métricas de imagem avançadas. Especificamente, utilizamos a função `structural_similarity` (SSIM) desta biblioteca para calcular a perda percentual de qualidade após o redimensionamento, comparando a estrutura das imagens antes e depois da transformação. |
 | **math** | (Padrão do Python) | Módulo padrão do Python utilizado para cálculos matemáticos básicos, como a conversão de radianos para graus (`math.degrees`) e a função `atan2` para determinar os ângulos das linhas detectadas. |
-| **mediapipe** | `0.10.14` | |
+| **mediapipe** | `0.10.14` | Utilizada para detecção de rosto de alta precisão. Emprega o modelo FaceMesh para encontrar um mapa detalhado de landmarks (pontos de referência) faciais. Esses pontos são então usados para criar uma máscara precisa (convexHull) que isola o rosto do fundo, permitindo uma extração de alta qualidade com fundo transparente. |
 ## 🚀 Como Executar
 
 Você pode executar este projeto de duas maneiras: localmente em sua máquina ou diretamente no Google Colab.
