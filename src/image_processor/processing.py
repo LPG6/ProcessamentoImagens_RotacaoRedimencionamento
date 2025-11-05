@@ -2,6 +2,7 @@ from skimage.metrics import structural_similarity as ssim
 import cv2
 import numpy as np
 import math
+import mediapipe as mp
 
 def rotacionar_imagem(imagem, angulo):
     """Rotaciona uma imagem. Um ângulo positivo resulta em rotação no sentido horário."""
