@@ -28,13 +28,27 @@ Processamento_de_Imagens_E02_Grupo3/
 │   requirements.txt
 │
 ├─── demo
+│       Rotação e Redimensionamento.mp4
+│
 ├─── docs
+│       DocumentaoParcial-EntregasSemanais-Semana04.pdf
+│       Documentação Parcial - Entregas Semanais - Semana05.pdf
+│       Projeto Sistema de Análise de Padrões - Módulo de Rotação e Redimensionamento.pdf
+│
 ├─── images
 │   ├─── imagesPostProcess
 │   │       big35.png
 │   │       big35AutoRotacao.png
 │   │       cafe-100-IN175,2-PQ13,92.png
 │   │       cafe100=1440-IN118,6-PQ0,4.png
+│   │       drAraujoD_Mediapipe+AutoRot.png
+│   │       drAraujoD_Mediapipe+Template.png
+│   │       felps_anao+Mediapipe.png
+│   │       felps_anao+remocao_Fundo.png
+│   │       gaucha_Cusco+Template(cafeD).png
+│   │       gaucha_Cusco_Mediapipe.png
+│   │       gaucho+remocao_Fundo.png
+│   │       Lorde_Farquaad+Mediapipe.png
 │   │       pinguimAutoRotacao-AutoRotacao.png
 │   │       pinguimAutoRotacao.png
 │   │       tutu10-IN189,73-PQ50,23.png
@@ -47,6 +61,10 @@ Processamento_de_Imagens_E02_Grupo3/
 │           drAraujoD.png
 │           drAraujoE.png
 │           drAraujoUp.png
+│           felps_anao.jpg
+│           gaucha_Cusco.jpg
+│           gaucho.jpg
+│           Lorde_Farquaad.png
 │           pinguim.jpg
 │           tutu.jpg
 │
