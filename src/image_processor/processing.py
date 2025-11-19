@@ -100,7 +100,6 @@ def calcular_perda_ssim(imagem_original_bgr, imagem_processada_bgr):
     
     perda_percentual = (1 - score) * 100
     
-    print(f"[DEBUG ANÁLISE] Score SSIM: {score:.4f}, Perda: {perda_percentual:.2f}%")
     return f"Perda de Qualidade (SSIM): {perda_percentual:.2f}%"
 
 def avaliar_nitidez(imagem):
@@ -113,7 +112,6 @@ def avaliar_nitidez(imagem):
 
     variancia_laplaciano = cv2.Laplacian(cinza, cv2.CV_64F).var()
     
-    print(f"[DEBUG ANÁLISE] Variância do Laplaciano (Nitidez): {variancia_laplaciano:.2f}")
     return f"Índice de Nitidez: {variancia_laplaciano:.2f}"
 
 def corte_rosto_mediapipe(imagem_bgr):
