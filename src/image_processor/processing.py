@@ -5,7 +5,6 @@ import math
 import mediapipe as mp
 
 def rotacionar_imagem(imagem, angulo):
-    """Rotaciona uma imagem. Um ângulo positivo resulta em rotação no sentido horário."""
     if imagem is None or angulo == 0:
         return imagem
     (h, w) = imagem.shape[:2]
@@ -21,8 +20,6 @@ def rotacionar_imagem(imagem, angulo):
     return cv2.warpAffine(imagem, M, (nova_w, nova_h), borderValue=border_value)
 
 def rotacao_automatica(imagem):
-    """Detecta a inclinação de uma imagem e a corrige."""
-    print("\n--- [DEBUG ROTAÇÃO] INICIANDO ROTAÇÃO AUTOMÁTICA ---")
     if imagem is None: return imagem
 
     img_para_analise = imagem if len(imagem.shape) == 2 or imagem.shape[2] == 3 else cv2.cvtColor(imagem, cv2.COLOR_BGRA2BGR)
@@ -35,18 +32,13 @@ def rotacao_automatica(imagem):
         
     angulos = [math.degrees(math.atan2(l[0][3] - l[0][1], l[0][2] - l[0][0])) for l in linhas]
     angulo_mediano = np.median(angulos)
-    print(f"[DEBUG ROTAÇÃO] Ângulo mediano calculado: {angulo_mediano:.2f} graus.")
 
     if abs(angulo_mediano) < 1.0:
-        print("[DEBUG ROTAÇÃO] Ângulo dentro da 'zona morta'. Nenhuma rotação aplicada.")
         return imagem
     else:
-        print(f"[DEBUG ROTAÇÃO] Aplicando rotação de {-angulo_mediano:.2f} graus.")
         return rotacionar_imagem(imagem, -angulo_mediano)
 
 def corte_automatico(imagem):
-    """Corta a imagem criando um retângulo delimitador ao redor do maior objeto."""
-    print("\n--- [DEBUG CORTE RETANGULAR] INICIANDO CORTE ---")
     h_orig, w_orig = imagem.shape[:2]
     img_para_analise = imagem if len(imagem.shape) == 2 or imagem.shape[2] == 3 else cv2.cvtColor(imagem, cv2.COLOR_BGRA2BGR)
     cinza = cv2.cvtColor(img_para_analise, cv2.COLOR_BGR2GRAY)
@@ -64,8 +56,6 @@ def corte_automatico(imagem):
     return imagem[y:y+h, x:x+w]
 
 def corte_com_remocao_fundo(imagem):
-    """Remove o fundo de uma imagem usando a detecção do maior contorno."""
-    print("\n--- [DEBUG REMOÇÃO DE FUNDO] INICIANDO ---")
     img_para_analise = imagem if len(imagem.shape) == 2 or imagem.shape[2] == 3 else cv2.cvtColor(imagem, cv2.COLOR_BGRA2BGR)
     imagem_bgra = cv2.cvtColor(img_para_analise, cv2.COLOR_BGR2BGRA)
     cinza = cv2.cvtColor(img_para_analise, cv2.COLOR_BGR2GRAY)
@@ -77,9 +67,6 @@ def corte_com_remocao_fundo(imagem):
     maior_contorno = max(contornos, key=cv2.contourArea)
     mascara = np.zeros(img_para_analise.shape[:2], dtype=np.uint8)
     cv2.drawContours(mascara, [maior_contorno], -1, (255), thickness=cv2.FILLED)
-    
-    cv2.imwrite("debug_mascara_gerada.png", mascara)
-    print("[DEBUG REMOÇÃO DE FUNDO] MÁSCARA SALVA: 'debug_mascara_gerada.png'.")
     
     imagem_bgra[:, :, 3] = mascara
     x, y, w, h = cv2.boundingRect(maior_contorno)
@@ -103,53 +90,33 @@ def redimensionar_imagem_alta_qualidade(imagem, nova_largura, nova_altura, mante
     return cv2.resize(imagem, (nova_largura, nova_altura), interpolation=interpolacao)
 
 def calcular_perda_ssim(imagem_original_bgr, imagem_processada_bgr):
-    """
-    Calcula a perda de qualidade usando SSIM após o redimensionamento.
-    A imagem processada é redimensionada de volta ao tamanho original para comparação.
-    """
-    print("[DEBUG ANÁLISE] Calculando perda de qualidade com SSIM...")
-    
-    # Converte ambas as imagens para escala de cinza para o cálculo do SSIM
     original_cinza = cv2.cvtColor(imagem_original_bgr, cv2.COLOR_BGR2GRAY)
     processada_cinza = cv2.cvtColor(imagem_processada_bgr, cv2.COLOR_BGR2GRAY)
 
-    # Redimensiona a imagem processada de volta ao tamanho original para que o SSIM possa ser calculado
     h_orig, w_orig = original_cinza.shape
     processada_cinza_revertida = cv2.resize(processada_cinza, (w_orig, h_orig), interpolation=cv2.INTER_AREA)
 
-    # Calcula o SSIM. O score varia de -1 a 1, onde 1 é uma correspondência perfeita.
     score, _ = ssim(original_cinza, processada_cinza_revertida, full=True)
     
-    # Calcula a perda percentual
     perda_percentual = (1 - score) * 100
     
     print(f"[DEBUG ANÁLISE] Score SSIM: {score:.4f}, Perda: {perda_percentual:.2f}%")
     return f"Perda de Qualidade (SSIM): {perda_percentual:.2f}%"
 
 def avaliar_nitidez(imagem):
-    """
-    Avalia a nitidez da imagem calculando a variância do Laplaciano.
-    Valores mais altos geralmente indicam uma imagem mais nítida.
-    """
-    print("[DEBUG ANÁLISE] Avaliando a nitidez da imagem...")
-    
-    # Converte para escala de cinza
-    if len(imagem.shape) > 2 and imagem.shape[2] == 4: # Se for BGRA
+    if len(imagem.shape) > 2 and imagem.shape[2] == 4:
         imagem_bgr = cv2.cvtColor(imagem, cv2.COLOR_BGRA2BGR)
     else:
         imagem_bgr = imagem
         
     cinza = cv2.cvtColor(imagem_bgr, cv2.COLOR_BGR2GRAY)
 
-    # Calcula a variância do operador Laplaciano
     variancia_laplaciano = cv2.Laplacian(cinza, cv2.CV_64F).var()
     
     print(f"[DEBUG ANÁLISE] Variância do Laplaciano (Nitidez): {variancia_laplaciano:.2f}")
     return f"Índice de Nitidez: {variancia_laplaciano:.2f}"
 
 def corte_rosto_mediapipe(imagem_bgr):
-
-    print("\n--- [DEBUG EXTRAÇÃO DE ROSTO] Iniciando com MediaPipe ---")
     
     mp_face_mesh = mp.solutions.face_mesh
     
@@ -166,7 +133,6 @@ def corte_rosto_mediapipe(imagem_bgr):
         results = face_mesh.process(imagem_rgb)
 
         if not results.multi_face_landmarks:
-            print("[DEBUG EXTRAÇÃO DE ROSTO] AVISO: Nenhum rosto foi detectado. Retornando imagem original.")
             return imagem_bgr
 
         for face_landmarks in results.multi_face_landmarks:
@@ -182,23 +148,16 @@ def corte_rosto_mediapipe(imagem_bgr):
             
             cv2.fillConvexPoly(mask, hull, 255)
 
-    cv2.imwrite("debug_mascara_rosto_mediapipe.png", mask)
-    print("[DEBUG EXTRAÇÃO DE ROSTO] MÁSCARA SALVA: 'debug_mascara_rosto_mediapipe.png'.")
-
     imagem_bgra[:, :, 3] = mask
 
     x, y, w, h = cv2.boundingRect(hull)
     imagem_final_cortada = imagem_bgra[y:y+h, x:x+w]
     
-    print("[DEBUG EXTRAÇÃO DE ROSTO] SUCESSO: Rosto extraído com fundo transparente.")
     return imagem_final_cortada
 
 def reorientar_objeto_por_template(imagem_bgr, template_bgr, rotacionar_func):
 
-    print("\n--- [DEBUG REORIENTAÇÃO] Iniciando reorientação por template ---")
-
     if template_bgr is None:
-        print("[DEBUG REORIENTAÇÃO] ERRO: Nenhuma imagem de template foi fornecida.")
         return imagem_bgr
 
     template_cinza = cv2.cvtColor(template_bgr, cv2.COLOR_BGR2GRAY)
@@ -210,18 +169,13 @@ def reorientar_objeto_por_template(imagem_bgr, template_bgr, rotacionar_func):
         imagem_cinza = cv2.cvtColor(imagem_rotacionada, cv2.COLOR_BGR2GRAY)
 
         if template_cinza.shape[0] > imagem_cinza.shape[0] or template_cinza.shape[1] > imagem_cinza.shape[1]:
-            print(f"[DEBUG REORIENTAÇÃO] Ângulo {angulo_teste}°: Template é maior que a imagem, pulando.")
             continue
 
         resultado = cv2.matchTemplate(imagem_cinza, template_cinza, cv2.TM_CCOEFF_NORMED)
         _, max_val, _, _ = cv2.minMaxLoc(resultado)
 
-        print(f"[DEBUG REORIENTAÇÃO] Testando ângulo {angulo_teste}° -> Score de similaridade: {max_val:.4f}")
-
         if max_val > melhor_score:
             melhor_score = max_val
             melhor_rotacao_final = angulo_teste
-
-    print(f"[DEBUG REORIENTAÇÃO] Melhor orientação encontrada: {melhor_rotacao_final}° com score {melhor_score:.4f}")
 
     return rotacionar_func(imagem_bgr, melhor_rotacao_final)
