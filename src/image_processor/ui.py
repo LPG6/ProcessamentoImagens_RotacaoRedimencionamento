@@ -72,7 +72,6 @@ def atualizar_estado_altura(manter_proporcao_ativo):
 
 def atualizar_formato_saida(metodo_corte):
     if metodo_corte in ['Remoção de Fundo (Objetos)', 'Extração de Rosto (MediaPipe)']:
-        print(f"[UI UPDATE] '{metodo_corte}' selecionado. Forçando saída para PNG.")
         return gr.update(value='PNG', interactive=False)
     else:
         return gr.update(interactive=True)
