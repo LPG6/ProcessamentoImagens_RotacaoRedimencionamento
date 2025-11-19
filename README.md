@@ -31,8 +31,12 @@ Processamento_de_Imagens_E02_Grupo3/
 │       Rotação e Redimensionamento.mp4
 │
 ├─── docs
-│       DocumentaoParcial-EntregasSemanais-Semana04.pdf
+│       Documentação Parcial - Entregas Semanais - Semana01.pdf
+│       Documentação Parcial - Entregas Semanais - Semana02.pdf
+│       Documentação Parcial - Entregas Semanais - Semana03.pdf
+│       Documentação Parcial - Entregas Semanais - Semana04.pdf
 │       Documentação Parcial - Entregas Semanais - Semana05.pdf
+│       Documentação Parcial - Entregas Semanais - Semana06.pdf
 │       Projeto Sistema de Análise de Padrões - Módulo de Rotação e Redimensionamento.pdf
 │
 ├─── images
