@@ -200,6 +200,18 @@ A interface é dividida em um painel de controle à esquerda e uma área de pré
 *   **Detecção de Contornos:** Para os métodos de corte, a imagem é convertida para escala de cinza e binarizada usando o método de Otsu (`cv2.THRESH_OTSU`) para separar o objeto do fundo. Em seguida, `cv2.findContours` localiza a forma do objeto principal (o maior contorno por área).
 *   **Depuração:** Durante o processo de remoção de fundo, o script gera automaticamente um arquivo chamado `debug_mascara_gerada.png` na mesma pasta. Este arquivo mostra a silhueta em preto e branco que foi usada para criar a transparência, sendo muito útil para diagnosticar por que um recorte pode não ter saído como o esperado.
 
+## 👥 Responsabilidades de cada integrante
+
+Este projeto foi desenvolvido pelos seguintes membros do grupo, com suas respectivas áreas de responsabilidade:
+
+| Área | Responsabilidades | Integrante(s) |
+| :--- | :--- | :--- |
+| **Desenvolvimento Principal (Código)** | Implementação do core do processamento de imagens, algoritmos de rotação e lógica Gradio. | Erick Marck, Rafael Mecenas |
+| **Testes e Validação** | Elaboração, execução e análise dos cenários de teste e garantia de qualidade. | Erick Marck |
+| **Documentação Técnica e Escrita** | Redação do README, documentação de código, relatórios e guias. | Carol Bispo, Livia P. Guimaraese, Melyssa Maria |
+| **Mídia e Apresentação** | Planejamento, gravação e edição do vídeo de demonstração do projeto. | Livia P. Guimaraese, Carol Bispo |
+
+
 ## 🧪 Casos de Teste e Demonstração
 
 Esta seção demonstra o comportamento da aplicação em diferentes cenários, destacando suas forças e limitações. Para replicar estes testes, você pode salvar as imagens de exemplo em uma pasta e utilizá-las na ferramenta.
